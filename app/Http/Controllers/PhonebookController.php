@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Models\Phonebook;
+use DB;
 
 class PhonebookController extends Controller
 {
@@ -13,6 +14,7 @@ class PhonebookController extends Controller
 
     /**
      * Load one record if `id` is presented, otherwise load collection
+     * using `name` filter if presented
      *
      * @param int|null $id
      * @param Request $request
@@ -21,6 +23,7 @@ class PhonebookController extends Controller
     public function get(Request $request, ?int $id = 0): JsonResponse
     {
         $page = $request->input('page', 0);
+        $name = $request->input('name', '');
         if (!is_numeric($page)) {
             return $this->bad_request();
         }
@@ -31,6 +34,10 @@ class PhonebookController extends Controller
             return $this->success(Phonebook::find($id)->first());
         }
         $query = Phonebook::orderBy('id');
+        if ($name) {
+            $query = $query->where('first_name', 'like', "%$name%")
+                ->orWhere('last_name', 'like', "%$name%");
+        }
         if ($page) {
             $query = $query->skip(($page-1) * env('PAGE_SIZE'))
                 ->take(env('PAGE_SIZE'));
