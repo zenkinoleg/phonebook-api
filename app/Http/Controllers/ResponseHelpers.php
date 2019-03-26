@@ -37,7 +37,20 @@ trait ResponseHelpers {
 		return $this->respond(Response::HTTP_FORBIDDEN,$data);
     }
 
-    protected function success($data='') {
+    protected function success($model='') {
+		if ( !$model ) {
+			return $this->respond(Response::HTTP_OK);
+		}
+		if ( is_array($model) ) {
+			return $this->respond(Response::HTTP_OK,$model);
+		}
+		$item = isset($model[0]) ? $model[0] : $model;
+		$data = [];
+		$data['model'] = class_basename($item);
+		$count = is_countable($model) ? count($model) : 1;
+		$data['message'] = '200 Succesfully retrieved. ' . $count . ' items fetched';
+		$data['data'] = $model->toArray();
+
 		return $this->respond(Response::HTTP_OK,$data);
     }
 
@@ -54,19 +67,6 @@ trait ResponseHelpers {
 		return $this->respond(Response::HTTP_OK,$data);
     }
 
-    protected function created($model = '') {
-		if ( !$model ) {
-			return $this->respond(Response::HTTP_OK);
-		}
-
-		$data = [];
-		$data['model'] = class_basename($model);
-		$data['data'] = $model->toArray();
-		$data['message'] = '200 Record Created';
-
-		return $this->respond(Response::HTTP_CREATED,$data);
-    }
-
     protected function deleted($model='') {
 		if ( !$model ) {
 			return $this->respond(Response::HTTP_OK);
@@ -78,5 +78,4 @@ trait ResponseHelpers {
 		];
 		return $this->respond(Response::HTTP_OK,$data);
     }
-
 }

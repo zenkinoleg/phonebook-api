@@ -34,3 +34,9 @@ function getQueryBindings($query)
         return is_numeric($binding) ? $binding : "'{$binding}'";
     })->toArray());
 }
+
+if (!function_exists('is_countable')) {
+    function is_countable($var) {
+        return (is_array($var) || $var instanceof Countable);
+    }
+}
