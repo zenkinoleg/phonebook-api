@@ -1,6 +1,7 @@
 ﻿<?php
 
-function _prnt($s, $stop = false){
+function _prnt($s, $stop = false)
+{
     if (php_sapi_name() != "cli") {
         $obj_wrap_top = "<pre>";
         $obj_wrap_bottom = "</pre>";
@@ -36,7 +37,8 @@ function getQueryBindings($query)
 }
 
 if (!function_exists('is_countable')) {
-    function is_countable($var) {
+    function is_countable($var)
+    {
         return (is_array($var) || $var instanceof Countable);
     }
 }

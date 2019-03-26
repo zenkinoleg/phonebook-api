@@ -12,7 +12,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
-	public const BEARER_SUFFIX = 'kjugq3458uio7t6sadgfkjghkl';
+    public const BEARER_SUFFIX = 'kjugq3458uio7t6sadgfkjghkl';
 
     /**
      * The attributes that are mass assignable.
@@ -32,25 +32,28 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password', 'hash', 'token'
     ];
 
-	public static function getPasswordHash(string $str='') : string {
-		return $str ? Hash::make($str) : '';
-	}
+    public static function getPasswordHash(string $str = '') : string
+    {
+        return $str ? Hash::make($str) : '';
+    }
 
-	public static function getBearerToken(string $str='') : string {
-		if ( !$str ) {
-			$str = str_random(20);
-		}
-		return Hash::make(cos(time()).$str.self::BEARER_SUFFIX);
-	}
+    public static function getBearerToken(string $str = '') : string
+    {
+        if (!$str) {
+            $str = str_random(20);
+        }
+        return Hash::make(cos(time()).$str.self::BEARER_SUFFIX);
+    }
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
-        self::creating(function($model){
-			if ( !$model->password ) {
-				// Should NOT use that simple password
-	            $model->password = str_random(8);
-			}
+        self::creating(function ($model) {
+            if (!$model->password) {
+                // Should NOT use that simple password
+                $model->password = str_random(8);
+            }
             $model->hash = self::getPasswordHash($model->password);
         });
-	}
+    }
 }

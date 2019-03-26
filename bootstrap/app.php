@@ -62,7 +62,7 @@ $app->singleton(
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-	'hostaway' => App\Http\Middleware\Hostaway::class,
+    'hostaway' => App\Http\Middleware\Hostaway::class,
 ]);
 
 /*

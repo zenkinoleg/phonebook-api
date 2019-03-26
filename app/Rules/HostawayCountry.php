@@ -14,8 +14,9 @@ class HostawayCountry implements ImplicitRule
      * @param  mixed  $value
      * @return bool
      */
-    public function passes($attribute, $value) {
-		return in_array($value,array_keys(Cache::get('country_codes')));
+    public function passes($attribute, $value)
+    {
+        return in_array($value, array_keys(Cache::get('country_codes')));
     }
 
     /**
@@ -23,7 +24,8 @@ class HostawayCountry implements ImplicitRule
      *
      * @return string
      */
-    public function message() {
+    public function message()
+    {
         return 'The :attribute is not in Hostaway countries list';
     }
 }

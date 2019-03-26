@@ -38,11 +38,11 @@ class Authenticate
         if ($this->auth->guard($guard)->guest()) {
             return response('Unauthorized.', 401);
         }
-		$user = app()->auth->guard()->user();
-		$secs = time() - strtotime($user->updated_at);
-		if ( $secs >= env('AUTH_EXPIRE') ) {
-			return response('Your token has Expired', 403);
-		}
+        $user = app()->auth->guard()->user();
+        $secs = time() - strtotime($user->updated_at);
+        if ($secs >= env('AUTH_EXPIRE')) {
+            return response('Your token has Expired', 403);
+        }
 
         return $next($request);
     }
