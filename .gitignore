@@ -1,0 +1,7 @@
+/deploy
+/resources
+/storage
+/tests
+/vendor
+.env
+phpunit.xml
