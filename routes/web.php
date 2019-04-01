@@ -17,7 +17,7 @@ $router->get('/', function () use ($router) {
 
 	$router->post('login', 'UsersController@login');
 
-	$router->group(['middleware' => ['hostaway','auth']], function () use ($router) {
+	$router->group(['middleware' => ['cache','auth']], function () use ($router) {
 		$router->get('phonebook[/{id}]', 'PhonebookController@get');
 		$router->post('phonebook[/{id}]', 'PhonebookController@add');
 		$router->delete('phonebook/{id}', 'PhonebookController@delete');
