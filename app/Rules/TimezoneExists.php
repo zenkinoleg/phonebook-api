@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Support\Facades\Cache;
 
-class HostawayCountry implements ImplicitRule
+class TimezoneExists implements ImplicitRule
 {
     /**
      * Determine if the validation rule passes.
@@ -16,7 +16,7 @@ class HostawayCountry implements ImplicitRule
      */
     public function passes($attribute, $value)
     {
-        return in_array($value, array_keys(Cache::get('country_codes')));
+        return in_array($value, array_keys(Cache::get('timezones')));
     }
 
     /**
@@ -26,6 +26,6 @@ class HostawayCountry implements ImplicitRule
      */
     public function message()
     {
-        return 'The :attribute is not in Hostaway countries list';
+        return 'The :attribute is not in timezones list';
     }
 }

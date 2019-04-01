@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Rules\HostawayCountry;
-use App\Rules\HostawayTimezone;
+use App\Rules\CountryExists;
+use App\Rules\TimezoneExists;
 
 class Phonebook extends Model
 {
@@ -25,8 +25,8 @@ class Phonebook extends Model
             'first_name' => ['required', 'string'],
             'last_name' => ['required', 'string'],
             'phone_number' => ['required', 'regex:/^\+\d{2} \d{3} \d{9}$/', "unique:phonebook,phone_number,$id" ],
-            'country' => [ 'required', 'string', 'min:2', 'max:2', new HostawayCountry ],
-            'timezone' => ['required', 'string', new HostawayTimezone ],
+            'country' => [ 'required', 'string', 'min:2', 'max:2', new CountryExists ],
+            'timezone' => ['required', 'string', new TimezoneExists ],
         ];
     }
 }
