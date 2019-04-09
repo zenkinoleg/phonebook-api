@@ -29,6 +29,12 @@ function _prnt($s, $stop = false)
     }
 }
 
+function _microsecs() {
+    $mt = explode(' ', microtime());
+    $t = $mt[1] * 1000 + round($mt[0] * 1000);
+    return $t;
+}
+
 function getQueryBindings($query)
 {
     return vsprintf(str_replace('?', '%s', $query->toSql()), collect($query->getBindings())->map(function ($binding) {

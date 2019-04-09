@@ -4,15 +4,19 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use App\Services\AppStats;
 
 class Authenticate
 {
+	use \App\Http\Traits\AppResponses;
+
     /**
      * The authentication guard factory instance.
      *
      * @var \Illuminate\Contracts\Auth\Factory
      */
     protected $auth;
+	protected $stats;
 
     /**
      * Create a new middleware instance.
@@ -20,9 +24,10 @@ class Authenticate
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
-    public function __construct(Auth $auth)
+    public function __construct(Auth $auth, AppStats $stats)
     {
         $this->auth = $auth;
+		$this->stats = $stats;
     }
 
     /**
@@ -36,14 +41,13 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            return response('Unauthorized.', 401);
+			return $this->unauthorized('Unauthorized request');
         }
         $user = app()->auth->guard()->user();
-        $secs = time() - strtotime($user->updated_at);
-        if ($secs >= env('AUTH_EXPIRE')) {
-            return response('Your token has Expired', 403);
+        if ( time() - strtotime($user->updated_at) > env('AUTH_EXPIRE') ) {
+			return $this->forbidden('Token is expired');
         }
-
+		$this->stats->click('User authorized');
         return $next($request);
     }
 }

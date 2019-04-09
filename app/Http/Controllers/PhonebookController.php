@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use App\Services\AppStats;
 use App\Models\Phonebook;
+//use App\Http\Traits\AppResponses;
 use DB;
 
 class PhonebookController extends Controller
 {
-    use ResponseHelpers;
+//    use ResponseHelpers;
+	use \App\Http\Traits\AppResponses;
+
+	private $stats;
+
+	public function __construct(AppStats $stats) {
+		$this->stats = $stats;
+	}
 
     /**
      * Load one record if `id` is presented, otherwise load collection
@@ -22,6 +31,7 @@ class PhonebookController extends Controller
      */
     public function get(Request $request, ?int $id = 0): JsonResponse
     {
+		$this->stats->click('Get Phonebook Start');
         $page = $request->input('page', 0);
         $name = $request->input('name', '');
         if (!is_numeric($page)) {
@@ -43,6 +53,7 @@ class PhonebookController extends Controller
                 ->take(env('PAGE_SIZE'));
         }
         $model = $query->get();
+		$this->stats->click('Get Phonebook End');
         return $this->success($model);
     }
 
