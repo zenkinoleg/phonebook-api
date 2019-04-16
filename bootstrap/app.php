@@ -57,15 +57,8 @@ $app->singleton(
 |
 */
 
-/*
-$app->middleware([
-    App\Http\Middleware\AppStats::class
-]);
-*/
-
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'cache' => App\Http\Middleware\ExternalCatalogs::class,
 ]);
 
 /*

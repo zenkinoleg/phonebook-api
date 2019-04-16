@@ -8,7 +8,7 @@ use App\Services\AppStats;
 
 class Authenticate
 {
-	use \App\Http\Traits\AppResponses;
+    use \App\Http\Traits\AppResponses;
 
     /**
      * The authentication guard factory instance.
@@ -16,7 +16,7 @@ class Authenticate
      * @var \Illuminate\Contracts\Auth\Factory
      */
     protected $auth;
-	protected $stats;
+    protected $stats;
 
     /**
      * Create a new middleware instance.
@@ -27,7 +27,7 @@ class Authenticate
     public function __construct(Auth $auth, AppStats $stats)
     {
         $this->auth = $auth;
-		$this->stats = $stats;
+        $this->stats = $stats;
     }
 
     /**
@@ -41,13 +41,13 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-			return $this->unauthorized('Unauthorized request');
+            return $this->unauthorized('Unauthorized request');
         }
         $user = app()->auth->guard()->user();
-        if ( time() - strtotime($user->updated_at) > env('AUTH_EXPIRE') ) {
-			return $this->forbidden('Token is expired');
+        if (time() - strtotime($user->updated_at) > env('AUTH_EXPIRE')) {
+            return $this->forbidden('Token is expired');
         }
-		$this->stats->click('User authorized');
+        $this->stats->click('User authorized');
         return $next($request);
     }
 }

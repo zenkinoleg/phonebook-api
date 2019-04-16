@@ -2,18 +2,20 @@
 
 namespace App\Http\Traits;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 trait AppResponses
 {
-    protected function respond(?string $status, ?array $data = []) {
-//		$stats = app(\App\Services\AppStats::class)->getData();
-		$data['stats'] = $this->stats->getData(1);
+    protected function respond(?string $status, ?array $data = [])
+    {
+        if (isset($this->stats)) {
+            $data['request'] = app('request')->input();
+            $data['stats'] = $this->stats->getData(1);
+        }
         return response()->json($data, $status);
     }
 
-    protected function not_found($data = [])
+    protected function notFound($data = [])
     {
         if (!isset($data['message'])) {
             $data['message'] = '404 Not Found';
@@ -21,7 +23,7 @@ trait AppResponses
         return $this->respond(Response::HTTP_NOT_FOUND, $data);
     }
 
-    protected function bad_request($data = [], $model = '')
+    protected function badRequest($data = [], $model = '')
     {
         if (!isset($data['message'])) {
             $data['message'] = '400 Bad Request';
@@ -34,19 +36,21 @@ trait AppResponses
         return $this->respond(Response::HTTP_BAD_REQUEST, $data);
     }
 
-    protected function unauthorized(?string $message = '') {
-		$data = [
-			'status' => '401 Unauthorized',
-			'message' => $message
-		];
+    protected function unauthorized(?string $message = '')
+    {
+        $data = [
+            'status' => '401 Unauthorized',
+            'message' => $message
+        ];
         return $this->respond(Response::HTTP_UNAUTHORIZED, $data);
     }
 
-    protected function forbidden(?string $message = '') {
-		$data = [
-			'status' => '403 Forbidden',
-			'message' => $message
-		];
+    protected function forbidden(?string $message = '')
+    {
+        $data = [
+            'status' => '403 Forbidden',
+            'message' => $message
+        ];
         return $this->respond(Response::HTTP_FORBIDDEN, $data);
     }
 

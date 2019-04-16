@@ -29,7 +29,8 @@ function _prnt($s, $stop = false)
     }
 }
 
-function _microsecs() {
+function _microsecs()
+{
     $mt = explode(' ', microtime());
     $t = $mt[1] * 1000 + round($mt[0] * 1000);
     return $t;

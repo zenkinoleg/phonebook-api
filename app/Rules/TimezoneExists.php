@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\ImplicitRule;
 use Illuminate\Support\Facades\Cache;
+use App\Services\ExternalSources;
 
 class TimezoneExists implements ImplicitRule
 {
@@ -16,7 +17,7 @@ class TimezoneExists implements ImplicitRule
      */
     public function passes($attribute, $value)
     {
-        return in_array($value, array_keys(Cache::get('timezones')));
+        return in_array($value, array_keys(ExternalSources::getTimezones()));
     }
 
     /**

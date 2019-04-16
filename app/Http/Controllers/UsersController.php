@@ -4,22 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\User;
 
 class UsersController extends Controller
 {
-    use ResponseHelpers;
+    use \App\Http\Traits\AppResponses;
 
     public function login(Request $request)
     {
         $user = User::where('email', $request->input('email'))->first();
         if (!$user) {
-            return $this->not_found();
+            return $this->notFound();
         }
         if (!Hash::check($request->input('password'), $user->hash)) {
             $data['message'] = 'Authentication Failed';
-            return $this->bad_request($data);
+            return $this->badRequest($data);
         }
         $user->update(['token'=>User::getBearerToken($request->input('email'))]);
 

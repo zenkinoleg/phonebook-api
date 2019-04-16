@@ -6,20 +6,23 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\AppStats;
+use App\Services\PhonebookService;
 use App\Models\Phonebook;
-//use App\Http\Traits\AppResponses;
-use DB;
+
+//use DB;
 
 class PhonebookController extends Controller
 {
-//    use ResponseHelpers;
-	use \App\Http\Traits\AppResponses;
+    use \App\Http\Traits\AppResponses;
 
-	private $stats;
+    private $stats;
+    private $phonebookService;
 
-	public function __construct(AppStats $stats) {
-		$this->stats = $stats;
-	}
+    public function __construct(AppStats $stats, PhonebookService $phonebookService)
+    {
+        $this->stats = $stats;
+        $this->phonebookService = $phonebookService;
+    }
 
     /**
      * Load one record if `id` is presented, otherwise load collection
@@ -31,29 +34,16 @@ class PhonebookController extends Controller
      */
     public function get(Request $request, ?int $id = 0): JsonResponse
     {
-		$this->stats->click('Get Phonebook Start');
-        $page = $request->input('page', 0);
-        $name = $request->input('name', '');
+        $this->stats->click('Get Phonebook Start');
+        $page = $request->input('page', 1);
         if (!is_numeric($page)) {
-            return $this->bad_request();
+            return $this->badRequest();
         }
-        if ($id && !Phonebook::find($id)) {
-            return $this->not_found();
+        $model = $this->phonebookService->loadModel($request, $id, $page);
+        if (!$model) {
+            return $this->notFound();
         }
-        if ($id) {
-            return $this->success(Phonebook::find($id)->first());
-        }
-        $query = Phonebook::orderBy('id');
-        if ($name) {
-            $query = $query->where('first_name', 'like', "%$name%")
-                ->orWhere('last_name', 'like', "%$name%");
-        }
-        if ($page) {
-            $query = $query->skip(($page-1) * env('PAGE_SIZE'))
-                ->take(env('PAGE_SIZE'));
-        }
-        $model = $query->get();
-		$this->stats->click('Get Phonebook End');
+        $this->stats->click('Get Phonebook End');
         return $this->success($model);
     }
 
@@ -67,7 +57,7 @@ class PhonebookController extends Controller
     public function add(Request $request, ?int $id = 0): JsonResponse
     {
         if ($id && !Phonebook::find($id)) {
-            return $this->not_found();
+            return $this->notFound();
         }
         $this->validate($request, Phonebook::rules($id));
         $model = Phonebook::updateOrCreate(
@@ -87,7 +77,7 @@ class PhonebookController extends Controller
     public function delete($id)
     {
         if ($id && !Phonebook::find($id)) {
-            return $this->not_found();
+            return $this->notFound();
         }
         $model = Phonebook::find($id);
         $clone = clone $model;

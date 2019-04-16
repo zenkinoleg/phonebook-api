@@ -8,7 +8,6 @@ use App\Rules\TimezoneExists;
 
 class Phonebook extends Model
 {
-
     protected $table = 'phonebook';
 
     protected $fillable = [
