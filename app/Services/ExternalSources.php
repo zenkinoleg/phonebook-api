@@ -19,7 +19,9 @@ class ExternalSources
             Cache::put('isoCountries', $arr['result'], env('CACHE_EXPIRE'));
             Log::info('Cache: `isoCountries` updated');
         } catch (\Exception $e) {
-            throw new \Exception('Problem loading `isoCountries`: ' . $e->getMessage());
+			$message = 'Problem loading `isoCountries`: ' . $e->getMessage();
+            Log::error($message);
+            throw new \Exception($message);
         }
         return Cache::get('isoCountries');
     }
@@ -36,7 +38,9 @@ class ExternalSources
             Cache::put('isoTimezones', $arr['result'], env('CACHE_EXPIRE'));
             Log::info('Cache: `isoTimezones` updated');
         } catch (\Exception $e) {
-            throw new \Exception('Problem loading `isoTimezones`: ' . $e->getMessage());
+			$message = 'Problem loading `isoTimezones`: ' . $e->getMessage();
+            Log::error($message);
+            throw new \Exception($message);
         }
         return Cache::get('isoTimezones');
     }
